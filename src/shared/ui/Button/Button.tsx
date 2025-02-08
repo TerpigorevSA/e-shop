@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import cn from 'clsx';
-import style from './Button.module.css';
+import style from './Button.module.scss';
 
 type ButtonProps = {
   lable: string;
@@ -23,8 +23,8 @@ const Button: FC<ButtonProps> = ({
     <div className={style.wrapper}>
       <button
         className={cn({
-          [style.button_disable]: disabled,
-          [style.button_enable]: !disabled,
+          [style.buttonDisable]: disabled,
+          [style.buttonEnable]: !disabled,
           [className]: !disabled,
           [style.button]: true,
         })}

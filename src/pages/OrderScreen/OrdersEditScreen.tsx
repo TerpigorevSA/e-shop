@@ -1,23 +1,28 @@
 import React, { useCallback, useState } from 'react';
 import cn from 'clsx';
-import styles from './OrdersEditScreen.module.css';
-import { MutateOrderBody, Order, OrdersFilters, OrderStatus } from '../../shared/types/serverTypes';
-import OrderProductItem from '../../entities/Product/ui/OrderProductItem/OrderProductItem';
-import ComponentFetchList from 'src/shared/ui/ComponentFetchList/ComponentFetchList';
-import useDataListController from '../../shared/hooks/useDataListController';
 import EditOrderItem from 'src/entities/Order/ui/EditOrderItem/EditOrderItem';
-import { useCreateOrderMutation, useGetOrdersQuery, useUpdateOrderMutation } from '../../entities/Order/api/orderApi';
-import PageLayout from '../../shared/ui/PageLayout/PageLayout';
+import ComponentFetchList from 'src/shared/ui/ComponentFetchList/ComponentFetchList';
+import styles from './OrdersEditScreen.module.scss';
 import OrdersFiltersForm from './OrdersFiltersForm/OrdersFiltersForm';
+import {
+  useCreateOrderMutation,
+  useGetOrdersQuery,
+  useUpdateOrderMutation,
+} from '../../entities/Order/api/orderApi';
+import OrderProductItem from '../../entities/Product/ui/OrderProductItem/OrderProductItem';
+import useDataListController from '../../shared/hooks/useDataListController';
+import { MutateOrderBody, Order, OrdersFilters, OrderStatus } from '../../shared/types/serverTypes';
+import PageLayout from '../../shared/ui/PageLayout/PageLayout';
 
 const OrdersEditScreen: React.FC = () => {
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
 
-  const { items, currentFilters, handlerFiltersChange, handlerFetchItems, handlerEditItem } = useDataListController<
-    Order,
-    OrdersFilters,
-    MutateOrderBody
-  >(useGetOrdersQuery, useUpdateOrderMutation, useCreateOrderMutation);
+  const { items, currentFilters, handlerFiltersChange, handlerFetchItems, handlerEditItem } =
+    useDataListController<Order, OrdersFilters, MutateOrderBody>(
+      useGetOrdersQuery,
+      useUpdateOrderMutation,
+      useCreateOrderMutation,
+    );
 
   const handlerStatusChange = useCallback(
     (status: OrderStatus, item: Order) => {
@@ -25,14 +30,17 @@ const OrdersEditScreen: React.FC = () => {
       if (oldItem) {
         const body: MutateOrderBody = {
           status: status,
-          products: oldItem.products.map((product) => ({ id: product.product.id, quantity: product.quantity })),
+          products: oldItem.products.map((product) => ({
+            id: product.product.id,
+            quantity: product.quantity,
+          })),
         };
         handlerEditItem(item.id, body);
       }
     },
-    [items]
+    [items],
   );
-
+  console.log('currentOrder', currentOrder);
   const renderCallback = useCallback(
     (item: Order) => (
       <div
@@ -44,14 +52,17 @@ const OrdersEditScreen: React.FC = () => {
           createdAt={item.createdAt}
           updatedAt={item.updatedAt}
           status={item.status}
-          totalPrice={item.products.reduce((total, product) => total + product.product.price * product.quantity, 0)}
+          totalPrice={item.products.reduce(
+            (total, product) => total + product.product.price * product.quantity,
+            0,
+          )}
           id={item.id}
-          email={item.user.name}
+          email={item.user.name ?? ''}
           onStatusChange={(status: OrderStatus) => handlerStatusChange(status, item)}
         />
       </div>
     ),
-    [currentOrder]
+    [currentOrder],
   );
 
   const handleClick = (order: Order) => {
@@ -63,11 +74,18 @@ const OrdersEditScreen: React.FC = () => {
       <PageLayout
         header={<></>}
         footer={<></>}
-        sidebar={<OrdersFiltersForm initialFilters={currentFilters} onChange={handlerFiltersChange} />}
+        sidebar={
+          <OrdersFiltersForm initialFilters={currentFilters} onChange={handlerFiltersChange} />
+        }
       >
         <div className={styles.content}>
           <div className={styles.orders}>
-            <ComponentFetchList doFetch={handlerFetchItems} items={items} render={renderCallback} oneObserve={true} />
+            <ComponentFetchList
+              doFetch={handlerFetchItems}
+              items={items}
+              render={renderCallback}
+              oneObserve={true}
+            />
           </div>
           <div className={styles.products}>
             {currentOrder &&

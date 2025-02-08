@@ -1,116 +1,126 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const port = 2233;
-const dist = path.join(__dirname, 'dist');
-const src = path.join(__dirname, 'src');
-const host = 'localhost';
-
-module.exports = (_, args) => {
+export default (_, args) => {
+  const isDev = args.mode === 'development';
   return {
     devtool: 'source-map',
-    context: src,
-    devServer: {
-      open: true,
-      port,
-      hot: true,
-      historyApiFallback: true,
-      host,
+    entry: './src/index.tsx',
+    output: {
+      path: path.resolve(process.cwd(), 'dist'),
+      publicPath: isDev ? '/' : '/e-shop/',
+      filename: '[name].[contenthash].js',
+      clean: true,
+    },
+    stats: {
+      warnings: true,
+      errors: true,
+      errorDetails: true,
     },
     resolve: {
-      modules: [src, 'node_modules'],
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
-        src,
+        src: path.resolve(process.cwd(), 'src'),
       },
-    },
-
-    entry: './index.tsx',
-    output: {
-      path: dist,
-      publicPath:
-        args.mode === 'development' ? `http://${host}:${port}/` : 'https://terpigorevsa.github.io/e-shop-old/',
-      filename: `js/[name].js`,
-      chunkFilename: `js/[name].js`,
     },
     module: {
       rules: [
         {
-          test: /\.(js|ts)x?$/,
-          loader: require.resolve('babel-loader'),
-          exclude: /node_modules/,
-        },
-        {
-          test: /\.less$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
+          test: /\.tsx?$/,
+          use: {
+            loader: 'ts-loader',
+            options: {
+              configFile: 'tsconfig.build.json',
             },
-            'css-loader',
-            'less-loader',
-          ],
+          },
+          exclude: /node_modules|(\.test\.tsx?$|\.spec\.tsx?$|__tests__)/,
         },
+        // {
+        //   test: /\.css$/,
+        //   exclude: /\.module\.css$/,
+        //   use: [!isDev ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader'],
+        // },
+        // {
+        //   test: /\.module\.css$/,
+        //   use: [
+        //     !isDev ? MiniCssExtractPlugin.loader : 'style-loader',
+        //     {
+        //       loader: 'css-loader',
+        //       options: {
+        //         modules: {
+        //           localIdentName: '[name]__[local]__[hash:base64:5]',
+        //         },
+        //       },
+        //     },
+        //   ],
+        // },
         {
-          test: /\.css$/,
+          test: /\.module\.s[ac]ss$/i,
           use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
+            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
+                esModule: false,
                 modules: {
                   localIdentName: '[name]_[local]-[hash:base64:5]',
                 },
               },
             },
+            {
+              loader: 'sass-loader',
+              options: {
+                sassOptions: {
+                  includePaths: ['src/shared/styles'],
+                },
+              },
+            },
           ],
-        },
-        {
-          test: /\.svg/,
-          type: 'asset/inline',
-        },
-        {
-          test: /\.(png|jpg|jpeg|gif)$/i,
-          type: 'asset/resource',
         },
         {
           test: /\.s[ac]ss$/i,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: {
-                  localIdentName: '[name]_[local]-[hash:base64:5]',
-                },
-              },
-            },
-            'sass-loader',
-          ],
+          exclude: /\.module\.s[ac]ss$/i,
+          use: ['style-loader', 'css-loader', 'sass-loader'],
+        },
+        {
+          test: /\.(png|jpe?g|gif|svg|ico)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'images/[name][contenthash][ext]',
+          },
+        },
+        {
+          test: /\.(woff2?|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'fonts/[name][contenthash][ext]',
+          },
         },
       ],
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './index.html',
-        favicon: './favicon.svg',
+        template: 'public/index.html',
       }),
-      new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({
-        filename: 'css/[name].css',
-        chunkFilename: 'css/[name].css',
-      }),
-      new ForkTsCheckerWebpackPlugin({
-        typescript: {
-          configFile: path.join(__dirname, 'tsconfig.json'),
-        },
-      }),
+      new MiniCssExtractPlugin(),
     ],
+    devServer: {
+      static: path.resolve(process.cwd(), 'dist'),
+      port: 3000,
+      open: true,
+      hot: true,
+      historyApiFallback: true,
+    },
+    performance: {
+      maxAssetSize: 800000,
+      maxEntrypointSize: 1024000,
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
+      runtimeChunk: 'single',
+    },
   };
 };

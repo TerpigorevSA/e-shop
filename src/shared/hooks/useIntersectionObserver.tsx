@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 
-function useIntersectionObserve<T extends HTMLElement>(
-  ref: React.MutableRefObject<T>,
+// function useIntersectionObserve<T extends (HTMLElement|null)>(
+function useIntersectionObserve(
+  // ref: React.MutableRefObject<T>,
+  ref: React.RefObject<HTMLElement | null>,
   onIntersect: () => void,
   options?: IntersectionObserverInit,
-  oneObserve = true
+  oneObserve = true,
 ) {
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {

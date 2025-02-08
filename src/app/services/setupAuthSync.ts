@@ -1,6 +1,6 @@
-import { store } from '../store/store';
-import { getTokenFromLocalStorage, TOKEN_KEY } from '../../shared/lib/localStorage';
 import { setAuthenticated, signout } from '../../features/Auth/model/slice';
+import { getTokenFromLocalStorage, TOKEN_KEY } from '../../shared/lib/localStorage';
+import { store } from '../store/store';
 
 export const setupAuthSync = () => {
   window.addEventListener('storage', (event) => {

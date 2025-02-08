@@ -1,17 +1,18 @@
-import React from 'react';
-import { NavItem } from '../../shared/ui/NavigationBar/NavigationBar';
-import AuthScreen, { AuthAction } from '../../pages/AuthScreen/AuthScreen';
-import ProfileScreen from '../../pages/ProfileScreen/ProfileScreen';
-import CatalogScreen from '../../pages/CatalogScreen/CatalogScreen';
-import { AuthenticationState } from '../../shared/hocs/withAuthenticationState';
-import ProductsEditScreen from '../../pages/ProductsScreen/ProductsEditScreen';
-import CartScreen from '../../pages/CartScreen/CartScreen';
-import RootScreen from '../../pages/RootScreen/RootScreen';
-import CategoriesEditScreen from '../../pages/CategoriesScreen/CategoriesEditScreen';
-import UserOrdersScreen from '../../pages/UserOrdersScreen/UserOrdersScreen';
 import OrdersEditScreen from 'src/pages/OrderScreen/OrdersEditScreen';
+import AuthScreen, { AuthAction } from '../../pages/AuthScreen/AuthScreen';
+import CartScreen from '../../pages/CartScreen/CartScreen';
+import CatalogScreen from '../../pages/CatalogScreen/CatalogScreen';
+import CategoriesEditScreen from '../../pages/CategoriesScreen/CategoriesEditScreen';
+import ProductsEditScreen from '../../pages/ProductsScreen/ProductsEditScreen';
+import ProfileScreen from '../../pages/ProfileScreen/ProfileScreen';
+import RootScreen from '../../pages/RootScreen/RootScreen';
+import UserOrdersScreen from '../../pages/UserOrdersScreen/UserOrdersScreen';
+import { AuthenticationState } from '../../shared/hocs/withAuthenticationState';
+import { NavItem } from '../../shared/ui/NavigationBar/NavigationBar';
 
-const homeMenuItems: NavItem[] = [{ label: 'Routes.Home.label', path: '/', element: <RootScreen /> }];
+const homeMenuItems: NavItem[] = [
+  { label: 'Routes.Home.label', path: '/', element: <RootScreen /> },
+];
 
 const shopMenuItems: NavItem[] = [
   { label: 'Routes.Catalog.label', path: '/catalog', element: <CatalogScreen /> },
@@ -86,4 +87,10 @@ const profileMenuItems: NavItem[] = [
   },
 ];
 
-export default [...homeMenuItems, ...shopMenuItems, ...profileMenuItems, ...editMenuItems, ...authMenuItems];
+export default [
+  ...homeMenuItems,
+  ...shopMenuItems,
+  ...profileMenuItems,
+  ...editMenuItems,
+  ...authMenuItems,
+];

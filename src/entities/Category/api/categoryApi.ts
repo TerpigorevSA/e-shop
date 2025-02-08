@@ -15,7 +15,7 @@ export const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCategories: builder.query<GetPageResult<Category>, CategoriesFilters>({
       query: (filters) =>
-        `/categories${!filters ? '' : `?${new URLSearchParams(stringifyObject(filters)).toString()}`}`,
+        `/categories${!filters ? '' : `?${new URLSearchParams(stringifyObject(JSON.parse(JSON.stringify(filters)))).toString()}`}`,
       // query: (filters) => '/category',
       // providesTags: ['category'],
       // keepUnusedDataFor: 10,
@@ -39,4 +39,5 @@ export const categoryApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetCategoriesQuery, useUpdateCategoryMutation, useCreateCategoryMutation } = categoryApi;
+export const { useGetCategoriesQuery, useUpdateCategoryMutation, useCreateCategoryMutation } =
+  categoryApi;

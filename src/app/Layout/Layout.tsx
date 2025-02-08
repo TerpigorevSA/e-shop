@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import cn from 'clsx';
-import Header from '../../shared/ui/Header/Header';
-import style from './Layout.module.css';
-import Logo from '../../shared/ui/Logo/Logo';
-import ThemeSwitcher from '../../shared/ui/ThemeSwitcher/ThemeSwitcher';
-import LanguageSwitcher from '../../shared/ui/LanguageSwitcher/LanguageSwitcher';
 import { Outlet } from 'react-router-dom';
-import NavigationBar, { NavItem } from '../../shared/ui/NavigationBar/NavigationBar';
+import style from './Layout.module.scss';
 import CartIndicator from '../../features/Cart/ui/CartIndicator/CartIndicator';
+import Header from '../../shared/ui/Header/Header';
+import LanguageSwitcher from '../../shared/ui/LanguageSwitcher/LanguageSwitcher';
+import Logo from '../../shared/ui/Logo/Logo';
+import NavigationBar, { NavItem } from '../../shared/ui/NavigationBar/NavigationBar';
+import ThemeSwitcher from '../../shared/ui/ThemeSwitcher/ThemeSwitcher';
 
 type LayoutProps = {
   menuItems: NavItem[];
@@ -15,15 +15,15 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({ menuItems }) => {
   return (
-    <div className={cn(style.Layout)}>
+    <div className={cn(style.layout)}>
       <Header>
         <div className={style.item}>
-          <Logo to={'/'} />
+          <Logo to="/" />
         </div>
         <div className={style.item}>
           <NavigationBar menuItems={menuItems} />
         </div>
-        <div className={style.right_wrapper}>
+        <div className={style.rightWrapper}>
           <div className={style.item}>
             <CartIndicator />
           </div>

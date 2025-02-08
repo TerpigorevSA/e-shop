@@ -1,8 +1,8 @@
 import React from 'react';
+import cn from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from 'clsx';
-import styles from './ChangePassword.module.css';
+import styles from './ChangePassword.module.scss';
 import Button from '../../../shared/ui/Button/Button';
 
 export type ChangePasswordFields = {
@@ -12,7 +12,7 @@ export type ChangePasswordFields = {
 };
 
 type ChangePasswordProps = {
-  onSubmit: (data: ChangePasswordFields, e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (data: ChangePasswordFields, e: React.BaseSyntheticEvent | undefined) => void;
 };
 
 const ChangePassword: React.FC<ChangePasswordProps> = ({ onSubmit }) => {
@@ -21,7 +21,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ onSubmit }) => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+  } = useForm<ChangePasswordFields>();
   const newPassword = watch('newPassword');
   const { t } = useTranslation();
 
@@ -59,7 +59,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ onSubmit }) => {
           type="password"
           {...register('confirmPassword', {
             required: t('ChangePassword.errors.confirmPasswordRequired'),
-            validate: (value) => value === newPassword || t('ChangePassword.errors.confirmPasswordMatch'),
+            validate: (value) =>
+              value === newPassword || t('ChangePassword.errors.confirmPasswordMatch'),
           })}
           placeholder={t('ChangePassword.confirmPasswordPlaceholder')}
         />
@@ -67,7 +68,12 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ onSubmit }) => {
           <p className={styles.error}>{errors.confirmPassword.message}</p>
         )}
       </div>
-      <Button className={styles.button} lable={t('ChangePassword.button')} type="submit" disabled={false} />
+      <Button
+        className={styles.button}
+        lable={t('ChangePassword.button')}
+        type="submit"
+        disabled={false}
+      />
     </form>
   );
 };

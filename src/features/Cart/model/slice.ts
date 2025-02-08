@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { authApi } from 'src/features/Auth/api/authApi';
 import { CartEntry } from '../../../entities/Cart/model/types';
 import { resetState } from '../../../shared/actions/actions';
-import { authApi } from 'src/features/Auth/api/authApi';
 // import { createOrder } from '../../../entities/Order/model/thunks';
 
 interface CartEntryState {
@@ -24,18 +24,27 @@ const cartEntrySlice = createSlice({
       state.currentCartEntries.push(action.payload);
     },
     removeFromCart: (state, action) => {
-      state.currentCartEntries = state.currentCartEntries.filter((item) => item.product.id !== action.payload);
+      state.currentCartEntries = state.currentCartEntries.filter(
+        (item) => item.product.id !== action.payload,
+      );
     },
     setQuantity: (state, action) => {
-      const existingItem = state.currentCartEntries.find((item) => item.product.id === action.payload.product.id);
+      const existingItem = state.currentCartEntries.find(
+        (item) => item.product.id === action.payload.product.id,
+      );
       if (existingItem) {
         state.currentCartEntries = state.currentCartEntries
           .map((item) =>
-            item.product.id === action.payload.product.id ? { ...item, quantity: action.payload.quantity } : item
+            item.product.id === action.payload.product.id
+              ? { ...item, quantity: action.payload.quantity }
+              : item,
           )
           .filter((item) => item.quantity > 0);
       } else {
-        state.currentCartEntries = [...state.currentCartEntries, { product: action.payload.product, quantity: 1 }];
+        state.currentCartEntries = [
+          ...state.currentCartEntries,
+          { product: action.payload.product, quantity: 1 },
+        ];
       }
     },
     clearCart: () => {
@@ -45,11 +54,11 @@ const cartEntrySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(resetState, () => initialState)
-      .addMatcher(authApi.endpoints.signin.matchPending, (state, action) => {
+      .addMatcher(authApi.endpoints.signin.matchPending, (state) => {
         state.createOrderStatus = 'loading';
         state.createOrdreError = null;
       })
-      .addMatcher(authApi.endpoints.signin.matchFulfilled, (state, action) => {
+      .addMatcher(authApi.endpoints.signin.matchFulfilled, (state) => {
         state.createOrderStatus = 'succeeded';
       })
       .addMatcher(authApi.endpoints.signin.matchRejected, (state, action) => {

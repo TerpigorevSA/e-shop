@@ -1,11 +1,11 @@
 import React from 'react';
+import cn from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from 'clsx';
-import styles from './CategoryEditForm.module.css';
-import Button from '../../../shared/ui/Button/Button';
+import styles from './CategoryEditForm.module.scss';
 import { API_BASE_URL } from '../../../shared/configs/api';
 import { getTokenFromLocalStorage } from '../../../shared/lib/localStorage';
+import Button from '../../../shared/ui/Button/Button';
 
 type CategoryEditFormFields = {
   name: string;
@@ -35,7 +35,7 @@ const CategoryEditForm: React.FC<CategoryEditFormProps> = ({ onSubmit, defaultVa
     const token = getTokenFromLocalStorage();
     if (!token) throw new Error('No token');
 
-    const [file] = e.target.files;
+    const [file] = e.target.files ?? [];
     if (!file) return;
 
     const body = new FormData();
@@ -57,7 +57,7 @@ const CategoryEditForm: React.FC<CategoryEditFormProps> = ({ onSubmit, defaultVa
       const { url } = await response.json();
       setValue('photo.url', url);
       clearErrors('photo.url');
-    } catch (err) {
+    } catch {
       setError('photo.url', {
         type: 'manual',
         message: t('CategoryEdit.errors.uploadError'),
@@ -75,7 +75,9 @@ const CategoryEditForm: React.FC<CategoryEditFormProps> = ({ onSubmit, defaultVa
           {...register('name', { required: t('CategoryEdit.errors.nameRequired') })}
           placeholder={t('CategoryEdit.namePlaceholder')}
         />
-        {typeof errors?.name?.message === 'string' && <p className={styles.error}>{errors.name.message}</p>}
+        {typeof errors?.name?.message === 'string' && (
+          <p className={styles.error}>{errors.name.message}</p>
+        )}
       </div>
 
       <div>
@@ -95,15 +97,31 @@ const CategoryEditForm: React.FC<CategoryEditFormProps> = ({ onSubmit, defaultVa
             placeholder={t('CategoryEdit.photoPlaceholder')}
           />
 
-          <input type="file" id="file-upload" onChange={handleFileUpload} style={{ display: 'none' }} />
-          <label htmlFor="file-upload" className={styles.customFileButton} style={{ whiteSpace: 'nowrap' }}>
+          <input
+            type="file"
+            id="file-upload"
+            onChange={handleFileUpload}
+            style={{ display: 'none' }}
+          />
+          <label
+            htmlFor="file-upload"
+            className={styles.customFileButton}
+            style={{ whiteSpace: 'nowrap' }}
+          >
             Выберите файл
           </label>
         </div>
-        {errors.photo && errors.photo?.url && <p className={styles.error}>{errors.photo?.url?.message}</p>}
+        {errors.photo && errors.photo?.url && (
+          <p className={styles.error}>{errors.photo?.url?.message}</p>
+        )}
       </div>
 
-      <Button className={styles.button} lable={t('CategoryEdit.button')} type="submit" disabled={false} />
+      <Button
+        className={styles.button}
+        lable={t('CategoryEdit.button')}
+        type="submit"
+        disabled={false}
+      />
     </form>
   );
 };

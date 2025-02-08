@@ -1,11 +1,11 @@
 import React from 'react';
+import cn from 'clsx';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from 'clsx';
-import styles from './ProductEditForm.module.css';
-import Button from '../../../shared/ui/Button/Button';
+import styles from './ProductEditForm.module.scss';
 import { API_BASE_URL } from '../../../shared/configs/api';
 import { getTokenFromLocalStorage } from '../../../shared/lib/localStorage';
+import Button from '../../../shared/ui/Button/Button';
 
 type ProductEditFormFields = {
   name: string;
@@ -22,7 +22,11 @@ type ProductEditFormProps = {
   categories?: string[];
 };
 
-const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValues, categories }) => {
+const ProductEditForm: React.FC<ProductEditFormProps> = ({
+  onSubmit,
+  defaultValues,
+  categories,
+}) => {
   const { t } = useTranslation();
   const {
     register,
@@ -40,7 +44,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
     const token = getTokenFromLocalStorage();
     if (!token) throw new Error('No token');
 
-    const [file] = e.target.files;
+    const [file] = e.target.files ?? [];
     if (!file) return;
 
     const body = new FormData();
@@ -81,7 +85,9 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
           {...register('name', { required: t('ProductEdit.errors.nameRequired') })}
           placeholder={t('ProductEdit.namePlaceholder')}
         />
-        {typeof errors?.name?.message === 'string' && <p className={styles.error}>{errors.name.message}</p>}
+        {typeof errors?.name?.message === 'string' && (
+          <p className={styles.error}>{errors.name.message}</p>
+        )}
       </div>
 
       <div>
@@ -101,12 +107,23 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
             placeholder={t('ProductEdit.photoPlaceholder')}
           />
 
-          <input type="file" id="file-upload" onChange={handleFileUpload} style={{ display: 'none' }} />
-          <label htmlFor="file-upload" className={styles.customFileButton} style={{ whiteSpace: 'nowrap' }}>
+          <input
+            type="file"
+            id="file-upload"
+            onChange={handleFileUpload}
+            style={{ display: 'none' }}
+          />
+          <label
+            htmlFor="file-upload"
+            className={styles.customFileButton}
+            style={{ whiteSpace: 'nowrap' }}
+          >
             Выберите файл
           </label>
         </div>
-        {errors.photo && errors.photo?.url && <p className={styles.error}>{errors.photo?.url?.message}</p>}
+        {errors.photo && errors.photo?.url && (
+          <p className={styles.error}>{errors.photo?.url?.message}</p>
+        )}
       </div>
 
       <div>
@@ -139,7 +156,9 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
           className={cn(styles.input, { [styles.error]: errors.oldPrice })}
           type="text"
           pattern="^-?\d*(\.\d+)?$"
-          {...register('oldPrice', { min: { value: 0, message: t('ProductEdit.errors.priceMin') } })}
+          {...register('oldPrice', {
+            min: { value: 0, message: t('ProductEdit.errors.priceMin') },
+          })}
           placeholder={t('ProductEdit.oldPricePlaceholder')}
         />
       </div>
@@ -153,7 +172,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
           render={({ field }) => (
             <select {...field} className={cn(styles.select)}>
               <option value="">{t('ProductEdit.selectCategory')}</option>
-              {categories.map((cat) => (
+              {categories?.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>
@@ -164,7 +183,12 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ onSubmit, defaultValu
         {errors.category && <p className={styles.error}>{errors.category.message}</p>}
       </div>
 
-      <Button className={styles.button} lable={t('ProductEdit.button')} type="submit" disabled={false} />
+      <Button
+        className={styles.button}
+        lable={t('ProductEdit.button')}
+        type="submit"
+        disabled={false}
+      />
     </form>
   );
 };

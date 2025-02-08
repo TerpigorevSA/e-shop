@@ -1,10 +1,10 @@
 import React, { ReactNode, useState } from 'react';
-import * as yup from 'yup';
 import cn from 'clsx';
-import styles from './CommonFiltersForm.module.css';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import styles from './CommonFiltersForm.module.scss';
 import { commonFiltersSchema } from './CommonFiltersFormSchema';
 import { CommonFilters, Sorting } from '../../../shared/types/serverTypes';
-import { useTranslation } from 'react-i18next';
 
 type CommonFilterFormProps<T extends CommonFilters> = {
   onChange: (filters: T) => void;
@@ -15,7 +15,7 @@ type CommonFilterFormProps<T extends CommonFilters> = {
     | ((
         errors: Record<string, string>,
         filters: T,
-        handleChange: <K extends keyof T>(key: K, value: T[K]) => void
+        handleChange: <K extends keyof T>(key: K, value: T[K]) => void,
       ) => ReactNode);
 };
 
@@ -26,13 +26,15 @@ export const CommonFiltersForm = <T extends CommonFilters>({
   children,
 }: CommonFilterFormProps<T>) => {
   const isFunction = (
-    value: unknown
+    value: unknown,
   ): value is (
     errors: Record<string, string>,
     filters: T,
-    handleChange: <K extends keyof T>(key: K, value: T[K]) => void
+    handleChange: <K extends keyof T>(key: K, value: T[K]) => void,
   ) => ReactNode => typeof value === 'function';
-  const filterFormSchema = childrenSchemas ? commonFiltersSchema.concat(childrenSchemas) : commonFiltersSchema;
+  const filterFormSchema = childrenSchemas
+    ? commonFiltersSchema.concat(childrenSchemas)
+    : commonFiltersSchema;
   const { t } = useTranslation();
 
   const [localFilters, setLocalFilters] = useState<T>(initialFilters);
@@ -132,7 +134,9 @@ export const CommonFiltersForm = <T extends CommonFilters>({
             </button>
           </div>
         </label>
-        {errors['createdAt.lte'] && <p className={cn(styles.error)}>{t(errors['createdAt.lte'])}</p>}
+        {errors['createdAt.lte'] && (
+          <p className={cn(styles.error)}>{t(errors['createdAt.lte'])}</p>
+        )}
       </div>
 
       <div>
@@ -193,7 +197,9 @@ export const CommonFiltersForm = <T extends CommonFilters>({
             </button>
           </div>
         </label>
-        {errors['updatedAt.lte'] && <p className={cn(styles.error)}>{t(errors['updatedAt.lte'])}</p>}
+        {errors['updatedAt.lte'] && (
+          <p className={cn(styles.error)}>{t(errors['updatedAt.lte'])}</p>
+        )}
       </div>
 
       <div>
@@ -211,7 +217,7 @@ export const CommonFiltersForm = <T extends CommonFilters>({
                       field: e.target.value as Sorting['field'],
                       type: localFilters?.sorting?.type || 'ASC',
                     }
-                  : undefined
+                  : undefined,
               )
             }
           >
@@ -222,7 +228,9 @@ export const CommonFiltersForm = <T extends CommonFilters>({
             <option value="name">{t('CommonFiltersForm.sorting.field.')}</option>
           </select>
         </label>
-        {errors['sorting.field'] && <p className={cn(styles.error)}>{t(errors['sorting.field'])}</p>}
+        {errors['sorting.field'] && (
+          <p className={cn(styles.error)}>{t(errors['sorting.field'])}</p>
+        )}
         <label className={cn(styles.subLabel)}>
           {t('CommonFiltersForm.sorting.direction')}
           <select

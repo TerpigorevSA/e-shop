@@ -179,7 +179,10 @@ export type MutateRequest<T> = {
   id: string;
 };
 
-export type MutateProductBody = Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'commandId' | 'category'> & {
+export type MutateProductBody = Omit<
+  Product,
+  'id' | 'createdAt' | 'updatedAt' | 'commandId' | 'category'
+> & {
   categoryId: string;
 };
 
@@ -190,7 +193,10 @@ export type MutateOrderProduct = {
   quantity: number;
 };
 
-export type MutateOrderBody = Omit<Order, 'id' | 'createdAt' | 'products' | 'user' | 'updatedAt' | 'commandId'> & {
+export type MutateOrderBody = Omit<
+  Order,
+  'id' | 'createdAt' | 'products' | 'user' | 'updatedAt' | 'commandId'
+> & {
   products: MutateOrderProduct[];
 };
 

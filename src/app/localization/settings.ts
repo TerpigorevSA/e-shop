@@ -1,7 +1,6 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-
+import { initReactI18next } from 'react-i18next';
 import * as resources from './resources/';
 
 export enum Languages {
@@ -21,7 +20,11 @@ i18n
     interpolation: {
       format: (value, format, lng) => {
         if (format === 'currency') {
-          const options: Intl.NumberFormatOptions = { style: 'currency', currency: 'RUB', currencyDisplay: 'symbol' };
+          const options: Intl.NumberFormatOptions = {
+            style: 'currency',
+            currency: 'RUB',
+            currencyDisplay: 'symbol',
+          };
           return new Intl.NumberFormat(lng, options).format(value).replace('RUB', '₽');
         }
         if (format === 'date') {

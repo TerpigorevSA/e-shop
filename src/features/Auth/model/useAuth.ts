@@ -1,14 +1,16 @@
-import { useSigninMutation, useSignupMutation } from '../api/authApi';
-import { saveToken } from 'src/shared/lib/localStorage';
-import { COMMAND_ID } from 'src/shared/configs/api';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../app/store/store';
+import { COMMAND_ID } from 'src/shared/configs/api';
+import { saveToken } from 'src/shared/lib/localStorage';
 import { setAuthenticated, signout } from './slice';
+import { AppDispatch } from '../../../app/store/store';
+import { useSigninMutation, useSignupMutation } from '../api/authApi';
 
 const useAuth = () => {
   const dispatch: AppDispatch = useDispatch();
-  const [signin, { isLoading: isLoadingSignin, isError: isErrorSignin, error: errorSignin }] = useSigninMutation();
-  const [signup, { isLoading: isLoadingSignup, isError: isErrorSignup, error: errorSignup }] = useSignupMutation();
+  const [signin, { isLoading: isLoadingSignin, isError: isErrorSignin, error: errorSignin }] =
+    useSigninMutation();
+  const [signup, { isLoading: isLoadingSignup, isError: isErrorSignup, error: errorSignup }] =
+    useSignupMutation();
   // const {
   //   data: profile,
   //   refetch,
@@ -43,7 +45,10 @@ const useAuth = () => {
     signOut,
     isLoading: isLoadingSignin || isLoadingSignup,
     isError: isErrorSignin || isErrorSignup,
-    error: [...(isErrorSignin ? (errorSignin as string[]) : []), ...(isErrorSignup ? (errorSignup as string[]) : [])],
+    error: [
+      ...(isErrorSignin ? (errorSignin as string[]) : []),
+      ...(isErrorSignup ? (errorSignup as string[]) : []),
+    ],
   };
 };
 

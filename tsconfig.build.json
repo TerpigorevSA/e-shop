@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "downlevelIteration": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "noEmit": false
+  },
+  "include": ["src", "declarations.d.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/__tests__"]
+}

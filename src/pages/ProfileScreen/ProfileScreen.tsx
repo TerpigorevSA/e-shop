@@ -1,34 +1,42 @@
 import React, { useCallback } from 'react';
-import EditProfile, { EditProfileFields } from './EditProfile/EditProfile';
-import ChangePassword, { ChangePasswordFields } from './ChangePassword/ChangePassword';
 import cn from 'clsx';
-import styles from './ProfileScreen.module.css';
 import { useTranslation } from 'react-i18next';
+import { Loader } from 'src/shared/ui/Loader/Loader';
+import ChangePassword, { ChangePasswordFields } from './ChangePassword/ChangePassword';
+import EditProfile, { EditProfileFields } from './EditProfile/EditProfile';
+import styles from './ProfileScreen.module.scss';
 import {
   useChangePasswordMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
 } from '../../entities/Profile/api/profileApi';
-import { Loader } from 'src/shared/ui/Loader/Loader';
 
 const ProfileScreen: React.FC = () => {
   const { t } = useTranslation();
 
-  const { data: currentUser, isLoading: profileIsLoading, isUninitialized, error: profileError } = useGetProfileQuery();
+  const {
+    data: currentUser,
+    isLoading: profileIsLoading,
+    isUninitialized,
+    error: profileError,
+  } = useGetProfileQuery();
   const [updateProfile, { error: updateProfileError }] = useUpdateProfileMutation();
   const [changePassword, { error: changePasswordError }] = useChangePasswordMutation();
 
-  const handleEditProfileSubmit = useCallback(async (data: EditProfileFields, e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await updateProfile({ name: data.userName });
-  }, []);
+  const handleEditProfileSubmit = useCallback(
+    async (data: EditProfileFields, e: React.BaseSyntheticEvent | undefined) => {
+      e?.preventDefault();
+      await updateProfile({ name: data.userName });
+    },
+    [],
+  );
 
   const handleChangePasswordSubmit = useCallback(
-    async (data: ChangePasswordFields, e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    async (data: ChangePasswordFields, e: React.BaseSyntheticEvent | undefined) => {
+      e?.preventDefault();
       await changePassword({ password: data.oldPassword, newPassword: data.newPassword });
     },
-    []
+    [],
   );
 
   if (isUninitialized || profileIsLoading) {
@@ -54,7 +62,9 @@ const ProfileScreen: React.FC = () => {
       <div>
         <ChangePassword onSubmit={handleChangePasswordSubmit} />
       </div>
-      {error && <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>}
+      {error && (
+        <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>
+      )}
     </div>
   );
 };

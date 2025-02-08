@@ -1,6 +1,6 @@
 import React from 'react';
-import style from './Logo.module.css';
 import { useNavigate } from 'react-router-dom';
+import style from './Logo.module.scss';
 
 type LogoProps = {
   to?: string;
@@ -8,9 +8,7 @@ type LogoProps = {
 
 const Logo: React.FC<LogoProps> = ({ to }) => {
   const navigate = useNavigate();
-  const handlerOnClick = () => {
-    to && navigate(to, { replace: true });
-  };
+  const handlerOnClick = () => (to ? navigate(to, { replace: true }) : null);
   return (
     <div className={style.wrapper} onClick={handlerOnClick}>
       <div className={style.caption}>

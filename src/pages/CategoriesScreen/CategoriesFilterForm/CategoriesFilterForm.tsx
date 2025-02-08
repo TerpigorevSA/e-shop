@@ -1,7 +1,6 @@
+import { categoryFilterSchema } from 'src/entities/Category/model/CategoryFilterSchema';
 import { CommonFiltersForm } from 'src/features/forms/CommonFiltersForm/CommonFiltersForm';
 import { CategoriesFilters } from 'src/shared/types/serverTypes';
-import React from 'react';
-import { categoryFilterSchema } from 'src/entities/Category/model/CategoryFilterSchema';
 
 type CategoriesFiltersFormProps = {
   initialFilters: CategoriesFilters;
@@ -13,7 +12,7 @@ const CategoriesFiltersForm = ({ initialFilters, onChange }: CategoriesFiltersFo
       initialFilters={initialFilters}
       childrenSchema={categoryFilterSchema}
       onChange={onChange}
-    ></CommonFiltersForm>
+    />
   );
 };
 

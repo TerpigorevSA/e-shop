@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { GetPageResult, MutateRequest, Pagination } from '../types/serverTypes';
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -7,9 +6,8 @@ import type {
   TypedUseMutation,
   TypedUseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { canCastToExtendedFetchError, canCastToFetchError } from '../lib/errorsCast';
-import { errorsToStrings } from '../lib/errorsToStrings';
 import { unexpectedErrorBounce } from '../lib/unexpectedErrorBounce';
+import { GetPageResult, MutateRequest, Pagination } from '../types/serverTypes';
 
 const PAGE_SIZE = 4;
 
@@ -28,7 +26,7 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
     TItem,
     MutateBody,
     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError | string[]>
-  >
+  >,
 ) => {
   const [pagination, setPagination] = useState<Pagination>({ pageSize: PAGE_SIZE, pageNumber: 1 });
   const [permanentFilters, setPermanentFilters] = useState<TFilters>({} as TFilters);
@@ -50,7 +48,7 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
   const serverPagination = ResponseData?.pagination;
 
   useEffect(() => {
-    if (data && !isFetching && (serverPagination.pageNumber !== 1 || firstRender.current)) {
+    if (data && !isFetching && (serverPagination?.pageNumber !== 1 || firstRender.current)) {
       setItems((prevItems) => [...prevItems, ...data]);
       firstRender.current = false;
     }
@@ -66,7 +64,7 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
 
   const handlerFetchItems = useCallback(() => {
     if (serverPagination && items.length < serverPagination.total && !isFetching) {
-      setPagination((prev) => ({ ...prev, pageNumber: prev.pageNumber + 1 }));
+      setPagination((prev) => ({ ...prev, pageNumber: (prev.pageNumber ?? 0) + 1 }));
     }
   }, [serverPagination, items.length, isFetching]);
 
@@ -77,7 +75,7 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
     (id: string, data: MutateBody) => {
       if (!id) {
         createItem(data)
-          .then((res) => {
+          .then(() => {
             /* nothing */
           })
           .catch((error) => {
@@ -87,10 +85,10 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
       }
       if (id) {
         updateItem({ id, body: data })
-        // updateItem({ id:"651c272f8a42911d60f03071", body: data })
+          // updateItem({ id:"651c272f8a42911d60f03071", body: data })
           .then((res) => {
             if (res.data) {
-              setItems((prev) => prev.map((item) => (item.id === res.data.id ? res.data : item)));
+              setItems((prev) => prev.map((item) => (item.id === res.data?.id ? res.data : item)));
             }
           })
           .catch((error) => {
@@ -99,7 +97,7 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
         return;
       }
     },
-    [items]
+    [items],
   );
 
   const [editingItem, setEditingItem] = useState<TItem | null>(null);
@@ -124,11 +122,10 @@ const useDataListController = <TItem extends { id: string }, TFilters, MutateBod
     setReset((prev) => !prev);
   }, []);
 
-
   unexpectedErrorBounce(errorQuery);
   unexpectedErrorBounce(errorCreate);
   unexpectedErrorBounce(errorUpdate);
-  
+
   return {
     items,
     permanentFilters,

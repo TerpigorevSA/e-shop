@@ -1,8 +1,8 @@
 import React from 'react';
+import cn from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from 'clsx';
-import styles from './SignUp.module.css';
+import styles from './SignUp.module.scss';
 import Button from '../../../shared/ui/Button/Button';
 
 export type SignUpFields = {
@@ -12,7 +12,7 @@ export type SignUpFields = {
 };
 
 type SignUpProps = {
-  onSubmit: (data: SignUpFields, e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (data: SignUpFields, e: React.BaseSyntheticEvent | undefined) => void;
 };
 
 export const SingUp: React.FC<SignUpProps> = ({ onSubmit }) => {
@@ -21,7 +21,7 @@ export const SingUp: React.FC<SignUpProps> = ({ onSubmit }) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<SignUpFields>();
   const password = watch('password');
   const { t } = useTranslation();
   const passwordLength = 8;
@@ -42,7 +42,9 @@ export const SingUp: React.FC<SignUpProps> = ({ onSubmit }) => {
           })}
           placeholder={t('SignUp.emailPlaceholder')}
         />
-        {typeof errors?.email?.message === 'string' && <p className={styles.error}>{errors.email.message}</p>}
+        {typeof errors?.email?.message === 'string' && (
+          <p className={styles.error}>{errors.email.message}</p>
+        )}
       </div>
       <div>
         <label className={styles.label}>{t('SignUp.password')}</label>
@@ -58,7 +60,9 @@ export const SingUp: React.FC<SignUpProps> = ({ onSubmit }) => {
           })}
           placeholder={t('SignUp.passwordPlaceholder')}
         />
-        {typeof errors?.password?.message === 'string' && <p className={styles.error}>{errors.password.message}</p>}
+        {typeof errors?.password?.message === 'string' && (
+          <p className={styles.error}>{errors.password.message}</p>
+        )}
       </div>
       <div>
         <label className={styles.label}>{t('SignUp.confirmPassword')}</label>

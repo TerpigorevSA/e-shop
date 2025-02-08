@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LanguageContext } from '../../contexts/LanguageContext/LanguageContext';
 import { Languages } from '../../../app/localization/settings';
+import { LanguageContext } from '../../contexts/LanguageContext/LanguageContext';
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { i18n } = useTranslation();
@@ -12,5 +12,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentLanguage(language);
   };
 
-  return <LanguageContext.Provider value={{ currentLanguage, switchLanguage }}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={{ currentLanguage, switchLanguage }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 };

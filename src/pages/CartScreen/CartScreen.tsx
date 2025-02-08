@@ -1,18 +1,23 @@
 import React, { useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import cn from 'clsx';
-import styles from './CartScreen.module.css';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
-import CartItem from '../../features/Cart/ui/CartItem/CartItem';
-import { AppDispatch, RootState } from '../../app/store/store';
-import { clearCart, setQuantity } from '../../features/Cart/model/slice';
-import { MutateOrderBody, MutateOrderProduct, OrderStatus, Product } from '../../shared/types/serverTypes';
-import Button from '../../shared/ui/Button/Button';
-// import { createOrder } from '../../entities/Order/model/thunks';
 import { CartEntry } from 'src/entities/Cart/model/types';
 import { useCreateOrderMutation } from 'src/entities/Order/api/orderApi';
 import { Loader } from 'src/shared/ui/Loader/Loader';
+import styles from './CartScreen.module.scss';
+import { AppDispatch, RootState } from '../../app/store/store';
+import { clearCart, setQuantity } from '../../features/Cart/model/slice';
+import CartItem from '../../features/Cart/ui/CartItem/CartItem';
+import {
+  MutateOrderBody,
+  MutateOrderProduct,
+  OrderStatus,
+  Product,
+} from '../../shared/types/serverTypes';
+import Button from '../../shared/ui/Button/Button';
+// import { createOrder } from '../../entities/Order/model/thunks';
+import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
 
 const CartScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -27,21 +32,21 @@ const CartScreen: React.FC = () => {
     (product: Product, count: number) => {
       dispatch(setQuantity({ product, quantity: count + 1 }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleDecrement = useCallback(
     (product: Product, count: number) => {
       dispatch(setQuantity({ product, quantity: count - 1 }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleInputChange = useCallback(
     (product: Product, count: number) => {
       dispatch(setQuantity({ product, quantity: count }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const renderCallback = useCallback(
@@ -58,7 +63,7 @@ const CartScreen: React.FC = () => {
         />
       </div>
     ),
-    []
+    [],
   );
 
   const handleCreateOrderClick = useCallback(() => {
@@ -92,7 +97,7 @@ const CartScreen: React.FC = () => {
 
   return (
     <div className={styles.layout}>
-      <div className={styles.header}></div>
+      <div className={styles.header} />
       <div className={styles.content}>
         <ComponentFetchList
           items={items}
@@ -104,7 +109,9 @@ const CartScreen: React.FC = () => {
         />
       </div>
       <div className={cn(styles.footer)}>
-        <div className={styles.error}>{error && (error as string[]).map((str) => t(str)).join('\n')}</div>
+        <div className={styles.error}>
+          {error && (error as string[]).map((str) => t(str)).join('\n')}
+        </div>
         {/* {createOrdreError && <div className={styles.error}>{(createOrdreError as string[]).map((str) => t(str)).join('\n')}</div>} */}
         <div className={cn(styles.orderWrapper)}>
           <div className={cn(styles.totalTitle)}>

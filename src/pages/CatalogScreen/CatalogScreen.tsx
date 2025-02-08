@@ -1,20 +1,28 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import cn from 'clsx';
-import styles from './CatalogScreen.module.css';
-import ProductItem from '../../entities/Product/ui/ProductItem/ProductItem';
-import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../app/store/store';
-import { Category, Pagination, Product, ProductsFilters } from '../../shared/types/serverTypes';
-import { setQuantity } from '../../features/Cart/model/slice';
-import PageLayout from '../../shared/ui/PageLayout/PageLayout';
-import CatalogFiltersForm from './CatalogFiltersForm/CatalogFiltersForm';
-import { useGetProductsQuery } from '../../entities/Product/api/productApi';
-import { useGetCategoriesQuery } from '../../entities/Category/api/categoryApi';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from 'src/shared/ui/Loader/Loader';
-
-const PAGE_SIZE = 5;
+import CatalogFiltersForm from './CatalogFiltersForm/CatalogFiltersForm';
+import styles from './CatalogScreen.module.scss';
+import { AppDispatch, RootState } from '../../app/store/store';
+import { useGetCategoriesQuery } from '../../entities/Category/api/categoryApi';
+import {
+  useCreateProductMutation,
+  useGetProductsQuery,
+  useUpdateProductMutation,
+} from '../../entities/Product/api/productApi';
+import ProductItem from '../../entities/Product/ui/ProductItem/ProductItem';
+import { setQuantity } from '../../features/Cart/model/slice';
+import useDataListController from '../../shared/hooks/useDataListController';
+import {
+  Category,
+  MutateProductBody,
+  Product,
+  ProductsFilters,
+} from '../../shared/types/serverTypes';
+import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
+import PageLayout from '../../shared/ui/PageLayout/PageLayout';
 
 const CatalogScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -26,9 +34,13 @@ const CatalogScreen: React.FC = () => {
     data: categoryResponseData,
     isFetching: isFetchingCategories,
     isSuccess: isSuccessCategories,
-  } = useGetCategoriesQuery(null, {
-    skip: !firstCategoryRender.current,
-  });
+  } = useGetCategoriesQuery(
+    {},
+    {
+      // POSSIBLE WRONG
+      skip: !firstCategoryRender.current,
+    },
+  );
 
   const categoryData = categoryResponseData?.data;
   const categoryServerPagination = categoryResponseData?.pagination;
@@ -37,7 +49,7 @@ const CatalogScreen: React.FC = () => {
     if (
       categoryData &&
       !isFetchingCategories &&
-      (categoryServerPagination.pageNumber !== 1 || firstCategoryRender.current)
+      (categoryServerPagination?.pageNumber !== 1 || firstCategoryRender.current)
     ) {
       setCategories((prev) => [...prev, ...categoryData]);
       firstCategoryRender.current = false;
@@ -45,36 +57,12 @@ const CatalogScreen: React.FC = () => {
   }, [categoryData, categoryServerPagination, isFetchingCategories]);
   // for categoties only
 
-  const [pagination, setPagination] = useState<Pagination>({ pageSize: PAGE_SIZE, pageNumber: 1 });
-  const [items, setItems] = useState<Product[]>([]);
-  const [currentFilters, setCurrentFilters] = useState<ProductsFilters>({});
-  const firstRender = useRef(true);
-  const [reset, setReset] = useState(true);
-
-  const { data: ResponseData, isFetching, error } = useGetProductsQuery({ ...currentFilters, pagination });
-
-  const data = ResponseData?.data;
-  const serverPagination = ResponseData?.pagination;
-  useEffect(() => {
-    if (data && !isFetching && (serverPagination.pageNumber !== 1 || firstRender.current)) {
-      setItems((prevItems) => [...prevItems, ...data]);
-      firstRender.current = false;
-    }
-  }, [data, serverPagination, reset, isFetching]);
-
-  const handleFiltersChange = useCallback((filters: ProductsFilters) => {
-    setCurrentFilters(filters);
-    setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-    setItems([]);
-    firstRender.current = true;
-    setReset((prev) => !prev);
-  }, []);
-
-  const handleFetchProducts = useCallback(() => {
-    if (serverPagination && items.length < serverPagination.total && !isFetching) {
-      setPagination((prev) => ({ ...prev, pageNumber: prev.pageNumber + 1 }));
-    }
-  }, [serverPagination, items.length, isFetching]);
+  const { items, currentFilters, handlerFiltersChange, handlerFetchItems, error } =
+    useDataListController<Product, ProductsFilters, MutateProductBody>(
+      useGetProductsQuery,
+      useUpdateProductMutation,
+      useCreateProductMutation,
+    );
 
   const currentCart = useSelector((state: RootState) => state.cart.currentCartEntries);
 
@@ -82,7 +70,7 @@ const CatalogScreen: React.FC = () => {
     (product: Product, quantity: number) => {
       dispatch(setQuantity({ product, quantity }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const renderCallback = useCallback(
@@ -98,21 +86,21 @@ const CatalogScreen: React.FC = () => {
         />
       </div>
     ),
-    [currentCart, handleSetQuantity]
+    [currentCart, handleSetQuantity],
   );
 
   return (
     <PageLayout
       footer={
         <>
-          (
           {error && (
             <div className={styles.footer}>
               {/* <div className={styles.error}>{JSON.stringify(error)}</div> */}
-              <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>
+              <div className={styles.error}>
+                {(error as string[]).map((str) => t(str)).join('\n')}
+              </div>
             </div>
           )}
-          )
         </>
       }
       header={<></>}
@@ -121,7 +109,7 @@ const CatalogScreen: React.FC = () => {
           <>
             <CatalogFiltersForm
               initialFilters={currentFilters}
-              onChange={handleFiltersChange}
+              onChange={handlerFiltersChange}
               categories={categories}
             />
           </>
@@ -131,7 +119,12 @@ const CatalogScreen: React.FC = () => {
       }
     >
       <div className={cn(styles.list)}>
-        <ComponentFetchList items={items} doFetch={handleFetchProducts} render={renderCallback} oneObserve={true} />
+        <ComponentFetchList
+          items={items}
+          doFetch={handlerFetchItems}
+          render={renderCallback}
+          oneObserve={true}
+        />
       </div>
     </PageLayout>
   );

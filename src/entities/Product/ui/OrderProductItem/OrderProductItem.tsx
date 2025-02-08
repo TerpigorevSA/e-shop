@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import styles from './OrderProductItem.module.css';
 import { useTranslation } from 'react-i18next';
+import styles from './OrderProductItem.module.scss';
 
 type OrderProductItemProps = {
-  photo: string;
+  photo?: string;
   name: string;
   price: number;
   quantity: number;

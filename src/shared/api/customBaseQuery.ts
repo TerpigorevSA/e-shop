@@ -1,11 +1,11 @@
 // shared/api/customBaseQuery.ts
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { ROUTES } from '../configs/routes';
+import { isNumber } from '../lib/errorsCast';
 import { errorsToStrings } from '../lib/errorsToStrings';
 import { getTokenFromLocalStorage } from '../lib/localStorage';
 import { navigateTo } from '../lib/navigationService';
-import { ROUTES } from '../configs/routes';
-import { isNumber } from '../lib/errorsCast';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://19429ba06ff2.vps.myjino.ru/api',
@@ -19,15 +19,15 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-export const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError | string[]> = async (
-  args,
-  api,
-  extraOptions
-) => {
+export const customBaseQuery: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError | string[]
+> = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
   if (result.error) {
     const fetchError = result.error as FetchBaseQueryError;
-    console.log("fetchError", fetchError)
+    console.log('fetchError', fetchError);
     if (isNumber(fetchError.status)) {
       if (fetchError.status === 401) {
         navigateTo(ROUTES.AUTHENTICATED_SIGNIN);

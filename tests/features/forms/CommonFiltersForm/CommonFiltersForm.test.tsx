@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { CommonFiltersForm } from '../../../../src/features/forms/CommonFiltersForm/CommonFiltersForm';
@@ -12,12 +11,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 const renderComponent = (initialFilters = {}) => {
-  render(
-    <CommonFiltersForm
-      initialFilters={initialFilters}
-      onChange={mockFiltersOnChange}
-    />
-  );
+  render(<CommonFiltersForm initialFilters={initialFilters} onChange={mockFiltersOnChange} />);
 };
 
 describe('CommonFiltersForm', () => {
@@ -35,7 +29,7 @@ describe('CommonFiltersForm', () => {
     expect(screen.getByLabelText(/sorting.direction/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submitButton/i })).toBeInTheDocument();
     expect(screen.getByText(/reset/i)).toBeInTheDocument();
-  })
+  });
 
   test('resets filters on reset button click', () => {
     renderComponent();
@@ -56,7 +50,6 @@ describe('CommonFiltersForm', () => {
 });
 
 describe('CommonFiltersForm - CreatedAt.fron Input', () => {
-
   beforeEach(() => {
     mockFiltersOnChange.mockClear();
   });
@@ -88,13 +81,11 @@ describe('CommonFiltersForm - CreatedAt.fron Input', () => {
     const inputElement = screen.getByLabelText(/createdAt.from/i);
     expect(inputElement).toHaveValue('1900-01-01T00:01');
   });
-
 });
 
 //
 
 describe('CommonFiltersForm - Sorting Select', () => {
-
   beforeEach(() => {
     mockFiltersOnChange.mockClear();
   });
@@ -137,7 +128,9 @@ describe('CommonFiltersForm - Sorting Select', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockFiltersOnChange).toHaveBeenCalledWith({ sorting: { field: 'updatedAt', type: 'ASC' } });
+      expect(mockFiltersOnChange).toHaveBeenCalledWith({
+        sorting: { field: 'updatedAt', type: 'ASC' },
+      });
     });
   });
 
@@ -150,7 +143,9 @@ describe('CommonFiltersForm - Sorting Select', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockFiltersOnChange).toHaveBeenCalledWith({ sorting: { field: 'name', type: 'DESC' } });
+      expect(mockFiltersOnChange).toHaveBeenCalledWith({
+        sorting: { field: 'name', type: 'DESC' },
+      });
     });
   });
 });

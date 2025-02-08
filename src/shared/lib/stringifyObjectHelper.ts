@@ -11,7 +11,7 @@ export const stringifyObject = <T>(obj: T): Stringified<T> => {
     } else if (typeof value === 'string' && value !== null) {
       result[key as keyof Stringified<T>] = `"${value}"` as any;
     } else {
-      result[key as keyof Stringified<T>] = value as any;
+      result[key as keyof Stringified<T>] = (value as any).toString();
     }
   }
 

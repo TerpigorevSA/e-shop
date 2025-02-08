@@ -1,6 +1,6 @@
 // import React, { ReactNode, useState } from 'react';
 // import cn from 'clsx';
-// import styles from './PageLayout.module.css';
+// import styles from './PageLayout.module.scss';
 
 // interface PageLayoutProps {
 //     header: ReactNode;
@@ -38,8 +38,8 @@
 // export default PageLayout;
 
 import React, { useState } from 'react';
-import styles from './PageLayout.module.css';
 import cn from 'clsx';
+import styles from './PageLayout.module.scss';
 import Button from '../Button/Button';
 
 interface PageLayoutProps {

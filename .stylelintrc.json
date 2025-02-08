@@ -1,0 +1,28 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
+  "rules": {
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "selector-max-id": 0,
+    "selector-class-pattern": "^[a-zA-Z0-9_-]+$",
+    "unit-allowed-list": [
+      "px",
+      "deg",
+      "rem",
+      "em",
+      "%",
+      "vh",
+      "vw",
+      "vmin",
+      "vmax",
+      "dvh",
+      "dvw",
+      "fr",
+      "ms",
+      "s"
+    ],
+    "unit-no-unknown": true
+  },
+  "ignoreFiles": ["dist/**/*", "node_modules/**/*"],
+  "defaultSeverity": "warning"
+}

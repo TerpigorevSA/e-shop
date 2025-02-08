@@ -1,24 +1,29 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import cn from 'clsx';
-import styles from './ProductsEditScreen.module.css';
-import ProductItem from '../../entities/Product/ui/ProductItem/ProductItem';
-import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
-import { Category, MutateProductBody, Product, ProductsFilters } from '../../shared/types/serverTypes';
-import PageLayout from '../../shared/ui/PageLayout/PageLayout';
+import { useTranslation } from 'react-i18next';
+import { Loader } from 'src/shared/ui/Loader/Loader';
+import styles from './ProductsEditScreen.module.scss';
+import ProductsFiltersForm from './ProductsFiltersForm/ProductsFiltersForm';
+import { useGetCategoriesQuery } from '../../entities/Category/api/categoryApi';
 import {
   useCreateProductMutation,
   useGetProductsQuery,
   useUpdateProductMutation,
 } from '../../entities/Product/api/productApi';
-import { useGetCategoriesQuery } from '../../entities/Category/api/categoryApi';
-import { useTranslation } from 'react-i18next';
-import withEditMode from '../../shared/hocs/withEditMode';
-import Button from '../../shared/ui/Button/Button';
-import ProductsFiltersForm from './ProductsFiltersForm/ProductsFiltersForm';
-import Modal from '../../shared/ui/Modal/Modal';
+import ProductItem from '../../entities/Product/ui/ProductItem/ProductItem';
 import ProductEditForm from '../../features/forms/ProductEditForm/ProductEditForm';
+import withEditMode from '../../shared/hocs/withEditMode';
 import useDataListController from '../../shared/hooks/useDataListController';
-import { Loader } from 'src/shared/ui/Loader/Loader';
+import {
+  Category,
+  MutateProductBody,
+  Product,
+  ProductsFilters,
+} from '../../shared/types/serverTypes';
+import Button from '../../shared/ui/Button/Button';
+import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
+import Modal from '../../shared/ui/Modal/Modal';
+import PageLayout from '../../shared/ui/PageLayout/PageLayout';
 
 const EditProductItem = withEditMode(ProductItem);
 
@@ -29,11 +34,8 @@ const ProductsEditScreen: React.FC = () => {
     id: null,
     category: null, //categories[0],
     name: '',
-    // desc: '',
     price: 0,
-    // photo: '',
-    // oldPrice: 0,
-  } as Product);
+  } as unknown as Product);
 
   // for categoties only
   const [categories, setCategories] = useState<Category[]>([]);
@@ -42,9 +44,13 @@ const ProductsEditScreen: React.FC = () => {
     data: categoryResponseData,
     isFetching: isFetchingCategories,
     isSuccess: isSuccessCategories,
-  } = useGetCategoriesQuery(null, {
-    skip: !firstCategoryRender.current,
-  });
+  } = useGetCategoriesQuery(
+    {},
+    {
+      //POSSIBLE WRONG
+      skip: !firstCategoryRender.current,
+    },
+  );
 
   const categoryData = categoryResponseData?.data;
   const categoryServerPagination = categoryResponseData?.pagination;
@@ -53,7 +59,7 @@ const ProductsEditScreen: React.FC = () => {
     if (
       categoryData &&
       !isFetchingCategories &&
-      (categoryServerPagination.pageNumber !== 1 || firstCategoryRender.current)
+      (categoryServerPagination?.pageNumber !== 1 || firstCategoryRender.current)
     ) {
       setCategories((prev) => [...prev, ...categoryData]);
       firstCategoryRender.current = false;
@@ -82,7 +88,7 @@ const ProductsEditScreen: React.FC = () => {
   } = useDataListController<Product, ProductsFilters, MutateProductBody>(
     useGetProductsQuery,
     useUpdateProductMutation,
-    useCreateProductMutation
+    useCreateProductMutation,
   );
 
   const renderCallback = useCallback(
@@ -98,7 +104,7 @@ const ProductsEditScreen: React.FC = () => {
         />
       </div>
     ),
-    []
+    [],
   );
 
   return (
@@ -109,7 +115,9 @@ const ProductsEditScreen: React.FC = () => {
             {error && (
               <div className={styles.footer}>
                 {/* <div className={styles.error}>{JSON.stringify(error)}</div> */}
-                <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>
+                <div className={styles.error}>
+                  {(error as string[]).map((str) => t(str)).join('\n')}
+                </div>
               </div>
             )}
           </>
@@ -139,11 +147,19 @@ const ProductsEditScreen: React.FC = () => {
         }
       >
         <div className={cn(styles.list)}>
-          <ComponentFetchList items={items} doFetch={handlerFetchItems} render={renderCallback} oneObserve={true} />
+          <ComponentFetchList
+            items={items}
+            doFetch={handlerFetchItems}
+            render={renderCallback}
+            oneObserve={true}
+          />
         </div>
       </PageLayout>
       {editingItem && (
-        <Modal setVisible={(visible) => (visible ? null : clearEditItem())} visible={editingItem !== null}>
+        <Modal
+          setVisible={(visible) => (visible ? null : clearEditItem())}
+          visible={editingItem !== null}
+        >
           <ProductEditForm
             defaultValues={{
               name: editingItem.name,
@@ -151,18 +167,19 @@ const ProductsEditScreen: React.FC = () => {
               description: editingItem.desc,
               category: editingItem.category?.name,
               oldPrice: editingItem.oldPrice,
-              photo: { url: editingItem.photo },
+              photo: editingItem.photo ? { url: editingItem.photo } : undefined,
             }}
             categories={categoryNames}
             onSubmit={(data) => {
-              const categoryId = categories.find((category) => category.name === data.category).id;
+              const categoryId =
+                categories?.find((category) => category.name === data.category)?.id ?? '';
               const { category: _category, description: desc, photo, ...rest } = data;
               void _category;
               handlerEditItem(editingItem.id, {
                 ...rest,
                 desc,
                 categoryId,
-                photo: photo.url,
+                photo: photo?.url,
               });
               clearEditItem();
             }}

@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import style from './CartItem.module.css';
-import Counter from '../../../../shared/ui/Counter/Counter';
-import Button from '../../../../shared/ui/Button/Button';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import style from './CartItem.module.scss';
 import { Product } from '../../../../shared/types/serverTypes';
+import Button from '../../../../shared/ui/Button/Button';
+import Counter from '../../../../shared/ui/Counter/Counter';
 
 type CartItemProps = Pick<Product, 'price' | 'name' | 'photo'> & {
   count: number;
@@ -12,7 +12,15 @@ type CartItemProps = Pick<Product, 'price' | 'name' | 'photo'> & {
   onInputChange: (value: number) => void;
 };
 
-const CartItem: FC<CartItemProps> = ({ name, count, photo, price, onIncrement, onDecrement, onInputChange }) => {
+const CartItem: FC<CartItemProps> = ({
+  name,
+  count,
+  photo,
+  price,
+  onIncrement,
+  onDecrement,
+  onInputChange,
+}) => {
   const { t } = useTranslation();
 
   return (

@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import CartButton from '../../../../features/Cart/ui/CartButton/CartButton';
-import style from './ProductDetail.module.css';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import style from './ProductDetail.module.scss';
+import CartButton from '../../../../features/Cart/ui/CartButton/CartButton';
 import { Category, Product } from '../../../../shared/types/serverTypes';
 
 type ProductDetailProps = Pick<Product, 'desc' | 'name' | 'price' | 'photo'> & {
@@ -17,7 +17,11 @@ const ProductDetail: FC<ProductDetailProps> = ({ name, photo, desc, price, categ
           {photo ? (
             <img className={style.image} src={photo} alt={t('product.photo_alt', { name })} />
           ) : (
-            <img className={style.image} src="undefined.png" alt={t('product.photo_alt', { name })} />
+            <img
+              className={style.image}
+              src="undefined.png"
+              alt={t('product.photo_alt', { name })}
+            />
           )}
         </div>
         <div className={style.infoWrapper}>

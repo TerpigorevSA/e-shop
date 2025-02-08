@@ -1,7 +1,7 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import cn from 'clsx';
-import style from './CategoryItem.module.css';
 import { useTranslation } from 'react-i18next';
+import style from './CategoryItem.module.scss';
 import { Category } from '../../../../shared/types/serverTypes';
 
 type CategoryItemProps = Pick<Category, 'name' | 'photo'>;

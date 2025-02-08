@@ -1,8 +1,8 @@
 import React from 'react';
+import cn from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from 'clsx';
-import styles from './EditProfile.module.css';
+import styles from './EditProfile.module.scss';
 import Button from '../../../shared/ui/Button/Button';
 
 export type EditProfileFields = {
@@ -10,7 +10,7 @@ export type EditProfileFields = {
 };
 
 type EditProfileProps = {
-  onSubmit: (data: EditProfileFields, e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (data: EditProfileFields, e: React.BaseSyntheticEvent | undefined) => void;
   defaultValues?: EditProfileFields;
 };
 
@@ -32,9 +32,16 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSubmit, defaultValues }) =>
           {...register('userName', { required: t('EditProfile.errors.userNameRequired') })}
           placeholder={t('EditProfile.userNamePlaceholder')}
         />
-        {typeof errors.userName?.message === 'string' && <p className={styles.error}>{errors.userName.message}</p>}
+        {typeof errors.userName?.message === 'string' && (
+          <p className={styles.error}>{errors.userName.message}</p>
+        )}
       </div>
-      <Button className={styles.button} lable={t('EditProfile.button')} disabled={false} type="submit" />
+      <Button
+        className={styles.button}
+        lable={t('EditProfile.button')}
+        disabled={false}
+        type="submit"
+      />
     </form>
   );
 };

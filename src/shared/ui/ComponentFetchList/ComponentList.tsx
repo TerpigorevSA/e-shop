@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { JSX, useRef, useState } from 'react';
 import useIntersectionObserve from '../../hooks/useIntersectionObserver';
 
 type ComponentListProps<T> = React.HTMLAttributes<HTMLDivElement> & {
@@ -11,13 +11,16 @@ type InfinityListVisibleItemType<T> = {
   value: T;
 };
 
-const ComponentList = <T,>({ items, itemElement: ItemElement }: ComponentListProps<T>) => {
+const ComponentList = <T extends JSX.IntrinsicAttributes>({
+  items,
+  itemElement: ItemElement,
+}: ComponentListProps<T>) => {
   const addItemsCount = 20;
 
   const [visibleItemsCount, setVisibleItemsCount] = useState(addItemsCount);
 
   const [visibleItems, setVisibleItems] = useState<InfinityListVisibleItemType<T>[]>(() =>
-    items.slice(0, visibleItemsCount).map((value, index) => ({ value, index }))
+    items.slice(0, visibleItemsCount).map((value, index) => ({ value, index })),
   );
 
   const onIntersect = () => {
@@ -29,7 +32,7 @@ const ComponentList = <T,>({ items, itemElement: ItemElement }: ComponentListPro
     ]);
     setVisibleItemsCount((prev) => prev + addItemsCount);
   };
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement | null>(null);
   useIntersectionObserve(targetRef, onIntersect, { threshold: 0.5 });
 
   return (

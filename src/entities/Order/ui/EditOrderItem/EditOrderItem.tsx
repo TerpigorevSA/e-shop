@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import styles from './EditOrderItem.module.css';
 import { useTranslation } from 'react-i18next';
 import { OrderStatus } from 'src/shared/types/serverTypes';
+import styles from './EditOrderItem.module.scss';
 
 type OrderItemProps = {
   createdAt: Date;

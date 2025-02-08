@@ -17,7 +17,9 @@ export const productApi = baseApi.injectEndpoints({
     getProducts: builder.query<GetPageResult<Product>, ProductsFilters>({
       query: (filters) =>
         `/products${
-          !filters ? '' : `?${new URLSearchParams(stringifyObject(JSON.parse(JSON.stringify(filters)))).toString()}`
+          !filters
+            ? ''
+            : `?${new URLSearchParams(stringifyObject(JSON.parse(JSON.stringify(filters)))).toString()}`
         }`,
       // query: (filters) => '/product',
       // providesTags: ['product'],
@@ -42,4 +44,5 @@ export const productApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetProductsQuery, useUpdateProductMutation, useCreateProductMutation } = productApi;
+export const { useGetProductsQuery, useUpdateProductMutation, useCreateProductMutation } =
+  productApi;

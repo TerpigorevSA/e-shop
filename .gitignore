@@ -131,6 +131,3 @@ dist
 .idea
 .jest
 storybook-static
-src_
-
-webpack.config.js

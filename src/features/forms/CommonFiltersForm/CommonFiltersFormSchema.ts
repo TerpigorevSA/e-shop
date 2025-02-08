@@ -36,9 +36,9 @@ const dateIntervalSchema: yup.ObjectSchema<DateInterval> = yup.object({
         ? schema.test(
             'date-order',
             'CommonFiltersFormSchema.dateIntervalSchema.LteLessGte',
-            (lte) => !lte || new Date(gte) < new Date(lte)
+            (lte) => !lte || new Date(gte) < new Date(lte),
           )
-        : schema
+        : schema,
     ),
 });
 

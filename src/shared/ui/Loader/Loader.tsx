@@ -1,10 +1,9 @@
-import React from "react"
-import style from './Loader.module.css'
+import style from './Loader.module.scss';
 
 export const Loader = () => {
-    return (
-        <div className={style.wrapper}>
-            <div className={style.spinner}></div>
-        </div>
-    )
-}
+  return (
+    <div className={style.wrapper}>
+      <div className={style.spinner} />
+    </div>
+  );
+};

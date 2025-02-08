@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import cn from 'clsx';
-import style from './Counter.module.css';
+import style from './Counter.module.scss';
 
 export type CounterProps = {
   count: number;
@@ -24,6 +24,7 @@ const Counter: FC<CounterProps> = ({
     /* do nothing */
   },
   onInputChange = (value: number) => {
+    !!value;
     /* do nothing */
   },
 }) => {
@@ -31,7 +32,9 @@ const Counter: FC<CounterProps> = ({
     <div className={cn(style.wrapper)}>
       <button
         onClick={() => onDecrement()}
-        className={cn(style.counter, { [style.counter_enable]: !disabled && (min === undefined || count > min) })}
+        className={cn(style.counter, {
+          [style.counterEnable]: !disabled && (min === undefined || count > min),
+        })}
         disabled={disabled || (min !== undefined && count <= min)}
       >
         -
@@ -50,7 +53,9 @@ const Counter: FC<CounterProps> = ({
       />
       <button
         onClick={() => onIncrement()}
-        className={cn(style.counter, { [style.counter_enable]: !disabled && (max === undefined || count < max) })}
+        className={cn(style.counter, {
+          [style.counterEnable]: !disabled && (max === undefined || count < max),
+        })}
         disabled={disabled || (max !== undefined && count >= max)}
       >
         +

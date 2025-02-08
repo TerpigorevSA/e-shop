@@ -1,23 +1,26 @@
 {
-	"compilerOptions": {
-		"outDir": "./dist",
-	  "baseUrl": ".",
-	  "paths": {
-			"src/*": ["src/*"]
-	  },
-	  "lib": ["dom", "dom.iterable", "esnext"],
-	  "allowJs": true,
-	  "allowSyntheticDefaultImports": true,
-	  "skipLibCheck": true,
-	  "esModuleInterop": true,
-	  "target": "ES2015",
-	  "module": "esnext",
-	  "sourceMap": true,
-	  "noImplicitAny": true,
-	  "downlevelIteration": true,
-	  "moduleResolution": "node",
-	  "resolveJsonModule": true,
-	  "jsx": "react"
-	}
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "src/*": ["src/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2015",
+    "useDefineForClassFields": true,
+    "isolatedModules": true
+  },
+  "exclude": ["node_modules", "dist", "webpack.config.js"]
 }
-  

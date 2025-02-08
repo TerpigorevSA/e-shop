@@ -1,13 +1,13 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { isServerError } from 'src/shared/lib/errorsCast';
-import { errorsToStrings} from 'src/shared/lib/errorsToStrings';
+import { errorsToStrings } from 'src/shared/lib/errorsToStrings';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
 }
 
 interface ErrorBoundaryState {
-  hasError:boolean;
+  hasError: boolean;
   error: Error | null;
 }
 
@@ -39,7 +39,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.error) {
       console.log('try render error boundary');
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <span>Здесь могла быть ваша реклама</span>
           <span>{this.state.error.message}</span>
           <button onClick={this.handlerRetry}>Перепытаться</button>

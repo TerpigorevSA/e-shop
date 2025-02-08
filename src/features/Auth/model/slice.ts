@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { resetState } from '../../../shared/actions/actions';
 import { clearToken } from 'src/shared/lib/localStorage';
+import { resetState } from '../../../shared/actions/actions';
 
 interface AuthState {
   token: string | null;

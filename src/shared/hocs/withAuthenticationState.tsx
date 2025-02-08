@@ -1,6 +1,6 @@
 import React, { ComponentType, FC } from 'react';
-import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import { RootState } from '../../app/store/store';
 
 export enum AuthenticationState {
@@ -29,14 +29,16 @@ export const WithAuthenticationState: FC<WithAuthenticationStateProps> = ({
 
   return (
     <>
-      {authenticationState === AuthenticationState.AdminAuthenticated && isAuthenticated && isAdmin && children}
+      {authenticationState === AuthenticationState.AdminAuthenticated &&
+        isAuthenticated &&
+        isAdmin &&
+        children}
       {authenticationState === AuthenticationState.Authenticated && isAuthenticated && children}
       {authenticationState === AuthenticationState.Unauthenticated && !isAuthenticated && children}
       {authenticationState === undefined && children}
       {(authenticationState === AuthenticationState.Authenticated && !isAuthenticated) ||
-        (authenticationState === AuthenticationState.AdminAuthenticated && (!isAdmin || !isAuthenticated) && (
-          <Navigate to={routes.signIn} replace />
-        ))}
+        (authenticationState === AuthenticationState.AdminAuthenticated &&
+          (!isAdmin || !isAuthenticated) && <Navigate to={routes.signIn} replace />)}
       {authenticationState === AuthenticationState.Unauthenticated && isAuthenticated && (
         <Navigate to={routes.root} replace />
       )}
@@ -45,8 +47,8 @@ export const WithAuthenticationState: FC<WithAuthenticationStateProps> = ({
 };
 
 const withAuthenticationState = <P extends object>(
-  WrappedComponent: ComponentType<P>
-): ComponentType<P & withAuthenticationStateProps> | null => {
+  WrappedComponent: ComponentType<P>,
+): ComponentType<P & withAuthenticationStateProps> => {
   const HOC: React.FC<P & withAuthenticationStateProps> = (props) => {
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const isAdmin = true;
@@ -55,9 +57,9 @@ const withAuthenticationState = <P extends object>(
 
     return (
       <>
-        {authenticationState === AuthenticationState.AdminAuthenticated && isAuthenticated && isAdmin && (
-          <WrappedComponent {...(restProps as P)} />
-        )}
+        {authenticationState === AuthenticationState.AdminAuthenticated &&
+          isAuthenticated &&
+          isAdmin && <WrappedComponent {...(restProps as P)} />}
         {authenticationState === AuthenticationState.Authenticated && isAuthenticated && (
           <WrappedComponent {...(restProps as P)} />
         )}

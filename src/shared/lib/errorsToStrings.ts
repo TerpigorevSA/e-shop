@@ -1,4 +1,3 @@
-import { ServerErrors } from '../types/serverTypes';
 import { isServerError } from './errorsCast';
 import { getLocalizedErrorMessage } from './errorsParsing';
 

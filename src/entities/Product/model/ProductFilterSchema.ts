@@ -16,20 +16,10 @@ import { CommonFilters, ProductsFilters } from '../../../shared/types/serverType
 // });
 
 export const createProductFiltersSchema = (
-  validCategiryIds: string[]
+  validCategiryIds: string[],
 ): yup.ObjectSchema<Omit<ProductsFilters, keyof CommonFilters>> => {
   return yup.object({
-    categoryIds: yup
-      .array()
-      .of(
-        yup
-          .string()
-          .test('is-valid-category', 'ProductFiltersSchema.isValidCategory', (value) =>
-            validCategiryIds.includes(value)
-          )
-          .optional() //TODO
-      )
-      .optional(),
+    categoryIds: yup.array(yup.string().required().oneOf(validCategiryIds)).optional(),
     name: yup.string().optional(),
     ids: yup.array().optional(),
   });

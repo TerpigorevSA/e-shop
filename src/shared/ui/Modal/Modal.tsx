@@ -1,6 +1,6 @@
-import React, { FC, ReactNode } from 'react';
-import style from './Modal.module.css';
+import { FC, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import style from './Modal.module.scss';
 
 type ModalProps = {
   visible: boolean;
@@ -11,13 +11,13 @@ type ModalProps = {
 const Modal: FC<ModalProps> = ({ visible, setVisible, children }) => {
   return visible
     ? createPortal(
-        <div className={style.modal_overlay}>
-          <div className={style.modal_box}>
-            <div className={style.close} onClick={() => setVisible(false)}></div>
+        <div className={style.modalOverlay}>
+          <div className={style.modalBox}>
+            <div className={style.close} onClick={() => setVisible(false)} />
             <div className={style.text}>{children}</div>
           </div>
         </div>,
-        document.body
+        document.body,
       )
     : null;
 };

@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import cn from 'clsx';
-import buttonStyle from '../../../../shared/ui/Button/Button.module.css';
-import style from './CartButton.module.css';
-import Counter from '../../../../shared/ui/Counter/Counter';
 import { useTranslation } from 'react-i18next';
+import style from './CartButton.module.scss';
+import buttonStyle from '../../../../shared/ui/Button/Button.module.scss';
+import Counter from '../../../../shared/ui/Counter/Counter';
 
 export type CartButtonProps = {
   count: number;
@@ -12,7 +12,14 @@ export type CartButtonProps = {
   onCountChange?: (value: number) => void;
 };
 
-const CartButton: FC<CartButtonProps> = ({ count, max, disabled, onCountChange }) => {
+const CartButton: FC<CartButtonProps> = ({
+  count,
+  max,
+  disabled,
+  onCountChange = () => {
+    /* nothing */
+  },
+}) => {
   const { t } = useTranslation();
 
   return (

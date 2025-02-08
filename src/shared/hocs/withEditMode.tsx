@@ -1,7 +1,9 @@
-import React, { ComponentType } from 'react';
-import style from './withEditMode.module.css';
+import { ComponentType } from 'react';
+import style from './withEditMode.module.scss';
 
-function withEditMode<P extends object>(WrappedComponent: ComponentType<P>): ComponentType<P & { onEdit: () => void }> {
+function withEditMode<P extends object>(
+  WrappedComponent: ComponentType<P>,
+): ComponentType<P & { onEdit: () => void }> {
   const ComponentWithEditMode = (props: P & { onEdit: () => void }) => {
     const { onEdit, ...rest } = props;
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import style from './NavigationBar.module.css';
-import withAuthenticationState, { AuthenticationState } from '../../hocs/withAuthenticationState';
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
+import style from './NavigationBar.module.scss';
+import withAuthenticationState, { AuthenticationState } from '../../hocs/withAuthenticationState';
 
 export interface NavItem {
   label: string;
@@ -23,7 +23,11 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ menuItems }) => {
     <nav className={style.navbar}>
       {menuItems.map((item) => (
         <div key={item.label} className={style.navItem}>
-          <AuthNavLink to={item.path} authenticationState={item.authenticationState} className={style.link}>
+          <AuthNavLink
+            to={item.path ?? ''}
+            authenticationState={item.authenticationState}
+            className={style.link}
+          >
             {t(item.label)}
           </AuthNavLink>
           {item.dropdown && (
@@ -31,7 +35,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ menuItems }) => {
               {item.dropdown.map((subItem) => (
                 <AuthNavLink
                   key={subItem.label}
-                  to={subItem.path}
+                  to={subItem.path ?? ''}
                   authenticationState={subItem.authenticationState}
                   className={style.link}
                 >

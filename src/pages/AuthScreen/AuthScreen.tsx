@@ -1,13 +1,13 @@
 import React from 'react';
-import SignIn, { SignInFields } from './SignIn/SignIn';
-import SignUp, { SignUpFields } from './SignUp/SignUp';
 import cn from 'clsx';
-import styles from './AuthScreen.module.css';
 import { useTranslation } from 'react-i18next';
-import SignOut from './SignOut/SignOut';
-import useAuth from 'src/features/Auth/model/useAuth';
 import { useNavigate } from 'react-router-dom';
+import useAuth from 'src/features/Auth/model/useAuth';
 import { Loader } from 'src/shared/ui/Loader/Loader';
+import styles from './AuthScreen.module.scss';
+import SignIn, { SignInFields } from './SignIn/SignIn';
+import SignOut from './SignOut/SignOut';
+import SignUp, { SignUpFields } from './SignUp/SignUp';
 
 export enum AuthAction {
   SignIn = 'signIn',
@@ -25,15 +25,15 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ authAction }) => {
 
   const { signIn, signUp, signOut, isLoading, error } = useAuth();
 
-  const handleSignInSubmit = (data: SignInFields, e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignInSubmit = (data: SignInFields, e: React.BaseSyntheticEvent | undefined) => {
+    e?.preventDefault();
     signIn(data.email, data.password);
     if (!error) {
       navigate(-1);
     }
   };
-  const handleSignUpSubmit = (data: SignUpFields, e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignUpSubmit = (data: SignUpFields, e: React.BaseSyntheticEvent | undefined) => {
+    e?.preventDefault();
     signUp(data.email, data.password);
   };
 
@@ -44,9 +44,15 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ authAction }) => {
     return <Loader />;
   }
 
-  const signInContent = <>{authAction === AuthAction.SignIn && <SignIn onSubmit={handleSignInSubmit} />}</>;
-  const signUpContent = <>{authAction === AuthAction.SignUp && <SignUp onSubmit={handleSignUpSubmit} />}</>;
-  const signOutContent = <>{authAction === AuthAction.SignOut && <SignOut onSignOut={handleSignOut} />}</>;
+  const signInContent = (
+    <>{authAction === AuthAction.SignIn && <SignIn onSubmit={handleSignInSubmit} />}</>
+  );
+  const signUpContent = (
+    <>{authAction === AuthAction.SignUp && <SignUp onSubmit={handleSignUpSubmit} />}</>
+  );
+  const signOutContent = (
+    <>{authAction === AuthAction.SignOut && <SignOut onSignOut={handleSignOut} />}</>
+  );
 
   return (
     <div className={cn(styles.page)}>
@@ -55,7 +61,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ authAction }) => {
         {signUpContent}
         {signOutContent}
       </div>
-      {error && <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>}
+      {error && (
+        <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>
+      )}
     </div>
   );
 };

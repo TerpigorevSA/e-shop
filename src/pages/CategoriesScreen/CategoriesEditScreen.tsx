@@ -1,22 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import cn from 'clsx';
-import styles from './CategoriesEditScreen.module.css';
-import CategoryItem from '../../entities/Category/ui/CategoryItem/CategoryItem';
-import CategoryEditForm from '../../features/forms/CategoryEditForm/CategoryEditForm';
-import withEditMode from '../../shared/hocs/withEditMode';
-import Modal from '../../shared/ui/Modal/Modal';
-import { CategoriesFilters, Category, MutateCategoryBody } from '../../shared/types/serverTypes';
-import Button from '../../shared/ui/Button/Button';
-import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
 import { useTranslation } from 'react-i18next';
+import styles from './CategoriesEditScreen.module.scss';
+import CategoriesFiltersForm from './CategoriesFilterForm/CategoriesFilterForm';
 import {
   useCreateCategoryMutation,
   useGetCategoriesQuery,
   useUpdateCategoryMutation,
 } from '../../entities/Category/api/categoryApi';
-import PageLayout from '../../shared/ui/PageLayout/PageLayout';
-import CategoriesFiltersForm from './CategoriesFilterForm/CategoriesFilterForm';
+import CategoryItem from '../../entities/Category/ui/CategoryItem/CategoryItem';
+import CategoryEditForm from '../../features/forms/CategoryEditForm/CategoryEditForm';
+import withEditMode from '../../shared/hocs/withEditMode';
 import useDataListController from '../../shared/hooks/useDataListController';
+import { CategoriesFilters, Category, MutateCategoryBody } from '../../shared/types/serverTypes';
+import Button from '../../shared/ui/Button/Button';
+import ComponentFetchList from '../../shared/ui/ComponentFetchList/ComponentFetchList';
+import Modal from '../../shared/ui/Modal/Modal';
+import PageLayout from '../../shared/ui/PageLayout/PageLayout';
 
 const EditCategoryItem = withEditMode(CategoryItem);
 
@@ -39,16 +39,20 @@ const CategoriesEditScreen: React.FC = () => {
   } = useDataListController<Category, CategoriesFilters, MutateCategoryBody>(
     useGetCategoriesQuery,
     useUpdateCategoryMutation,
-    useCreateCategoryMutation
+    useCreateCategoryMutation,
   );
 
   const renderCallback = useCallback(
     (item: Category) => (
       <div className={cn(styles.item)} key={item.id}>
-        <EditCategoryItem onEdit={() => handlerEditClick(item)} name={item.name} photo={item.photo} />
+        <EditCategoryItem
+          onEdit={() => handlerEditClick(item)}
+          name={item.name}
+          photo={item.photo}
+        />
       </div>
     ),
-    []
+    [],
   );
 
   return (
@@ -70,25 +74,35 @@ const CategoriesEditScreen: React.FC = () => {
         footer={
           error && (
             <div className={styles.footer}>
-              <div className={styles.error}>{(error as string[]).map((str) => t(str)).join('\n')}</div>
+              <div className={styles.error}>
+                {(error as string[]).map((str) => t(str)).join('\n')}
+              </div>
             </div>
           )
         }
       >
-        <ComponentFetchList items={items} doFetch={handlerFetchItems} render={renderCallback} oneObserve={true} />
+        <ComponentFetchList
+          items={items}
+          doFetch={handlerFetchItems}
+          render={renderCallback}
+          oneObserve={true}
+        />
       </PageLayout>
       {editingItem && (
-        <Modal setVisible={(visible) => (visible ? null : clearEditItem())} visible={editingItem !== null}>
+        <Modal
+          setVisible={(visible) => (visible ? null : clearEditItem())}
+          visible={editingItem !== null}
+        >
           <CategoryEditForm
             defaultValues={{
               name: editingItem.name,
-              photo: { url: editingItem.photo },
+              photo: editingItem.photo ? { url: editingItem.photo } : undefined,
             }}
             onSubmit={(data) => {
               const { photo, ...rest } = data;
               handlerEditItem(editingItem.id, {
                 ...rest,
-                photo: photo.url,
+                photo: photo?.url,
               });
               clearEditItem();
             }}
