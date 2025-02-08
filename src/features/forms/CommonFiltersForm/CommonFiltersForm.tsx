@@ -11,12 +11,12 @@ type CommonFilterFormProps<T extends CommonFilters> = {
   initialFilters: T;
   childrenSchema?: yup.ObjectSchema<Omit<T, keyof CommonFilters>>;
   children?:
-    | ReactNode
-    | ((
-        errors: Record<string, string>,
-        filters: T,
-        handleChange: <K extends keyof T>(key: K, value: T[K]) => void,
-      ) => ReactNode);
+  | ReactNode
+  | ((
+    errors: Record<string, string>,
+    filters: T,
+    handleChange: <K extends keyof T>(key: K, value: T[K]) => void,
+  ) => ReactNode);
 };
 
 export const CommonFiltersForm = <T extends CommonFilters>({
@@ -214,9 +214,9 @@ export const CommonFiltersForm = <T extends CommonFilters>({
                 'sorting',
                 e.target.value
                   ? {
-                      field: e.target.value as Sorting['field'],
-                      type: localFilters?.sorting?.type || 'ASC',
-                    }
+                    field: e.target.value as Sorting['field'],
+                    type: localFilters?.sorting?.type || 'ASC',
+                  }
                   : undefined,
               )
             }
@@ -225,7 +225,7 @@ export const CommonFiltersForm = <T extends CommonFilters>({
             <option value="id">{t('CommonFiltersForm.sorting.field.id')}</option>
             <option value="createdAt">{t('CommonFiltersForm.sorting.field.createdAt')}</option>
             <option value="updatedAt">{t('CommonFiltersForm.sorting.field.updatedAt')}</option>
-            <option value="name">{t('CommonFiltersForm.sorting.field.')}</option>
+            <option value="name">{t('CommonFiltersForm.sorting.field.name')}</option>
           </select>
         </label>
         {errors['sorting.field'] && (
