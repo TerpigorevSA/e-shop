@@ -28,7 +28,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ authAction }) => {
   const handleSignInSubmit = (data: SignInFields, e: React.BaseSyntheticEvent | undefined) => {
     e?.preventDefault();
     signIn(data.email, data.password);
-    if (!error) {
+    if (!error || error.length === 0) {
       navigate(-1);
     }
   };
