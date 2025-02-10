@@ -40,7 +40,7 @@ const OrdersEditScreen: React.FC = () => {
     },
     [items],
   );
-  console.log('currentOrder', currentOrder);
+
   const renderCallback = useCallback(
     (item: Order) => (
       <div

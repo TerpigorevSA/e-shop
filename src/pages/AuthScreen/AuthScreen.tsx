@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,16 +22,25 @@ type AuthScreenProps = {
 const AuthScreen: React.FC<AuthScreenProps> = ({ authAction }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [navigatePreviose, setNavigatePreviose] = React.useState<boolean>(false);
 
   const { signIn, signUp, signOut, isLoading, error } = useAuth();
 
   const handleSignInSubmit = (data: SignInFields, e: React.BaseSyntheticEvent | undefined) => {
     e?.preventDefault();
     signIn(data.email, data.password);
-    if (!error || error.length === 0) {
+    setNavigatePreviose(true);
+    // if (!error || error.length === 0) {
+    //   navigate(-1);
+    // }
+  };
+
+  useEffect(() => {
+    if (navigatePreviose && !isLoading && (!error || error.length === 0)) {
       navigate(-1);
     }
-  };
+  }, [navigatePreviose, isLoading, error]);
+
   const handleSignUpSubmit = (data: SignUpFields, e: React.BaseSyntheticEvent | undefined) => {
     e?.preventDefault();
     signUp(data.email, data.password);
