@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import cn from 'clsx';
+import { useTranslation } from 'react-i18next';
 import EditOrderItem from 'src/entities/Order/ui/EditOrderItem/EditOrderItem';
 import ComponentFetchList from 'src/shared/ui/ComponentFetchList/ComponentFetchList';
 import styles from './OrdersEditScreen.module.scss';
@@ -15,9 +16,10 @@ import { MutateOrderBody, Order, OrdersFilters, OrderStatus } from '../../shared
 import PageLayout from '../../shared/ui/PageLayout/PageLayout';
 
 const OrdersEditScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
 
-  const { items, currentFilters, handlerFiltersChange, handlerFetchItems, handlerEditItem } =
+  const { items, currentFilters, handlerFiltersChange, handlerFetchItems, handlerEditItem, error } =
     useDataListController<Order, OrdersFilters, MutateOrderBody>(
       useGetOrdersQuery,
       useUpdateOrderMutation,
@@ -73,7 +75,18 @@ const OrdersEditScreen: React.FC = () => {
     <>
       <PageLayout
         header={<></>}
-        footer={<></>}
+        footer={
+          <>
+            {error && (
+              <div className={styles.footer}>
+                {/* <div className={styles.error}>{JSON.stringify(error)}</div> */}
+                <div className={styles.error}>
+                  {(error as string[]).map((str) => t(str)).join('\n')}
+                </div>
+              </div>
+            )}
+          </>
+        }
         sidebar={
           <OrdersFiltersForm initialFilters={currentFilters} onChange={handlerFiltersChange} />
         }
